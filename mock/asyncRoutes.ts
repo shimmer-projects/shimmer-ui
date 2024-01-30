@@ -7,10 +7,44 @@ import { MockMethod } from "vite-plugin-mock";
  * common：普通角色
  */
 
+const authorityRouter = {
+  path: "/authority",
+  meta: {
+    title: "权限管理",
+    icon: "lollipop",
+    rank: 9
+  },
+  children: [
+    {
+      path: "/authority/user/index",
+      name: "UserManager",
+      meta: {
+        title: "用户管理",
+        roles: ["admin", "common"]
+      }
+    },
+    {
+      path: "/authority/job/index",
+      name: "JobManager",
+      meta: {
+        title: "职位管理",
+        roles: ["admin", "common"]
+      }
+    },
+    {
+      path: "/authority/org/index",
+      name: "OrgManager",
+      meta: {
+        title: "组织管理",
+        roles: ["admin", "common"]
+      }
+    }
+  ]
+};
 const permissionRouter = {
   path: "/permission",
   meta: {
-    title: "权限管理",
+    title: "PS管理",
     icon: "lollipop",
     rank: 10
   },
@@ -42,7 +76,7 @@ export default [
     response: () => {
       return {
         success: true,
-        data: [permissionRouter]
+        data: [authorityRouter, permissionRouter]
       };
     }
   }

@@ -5,5 +5,5 @@ defineOptions({
 </script>
 
 <template>
-  <h1>Pure-Admin-Thin（非国际化版本）</h1>
+  <h1>欢迎来到我的世界 SHIMMER(微光)</h1>
 </template>
