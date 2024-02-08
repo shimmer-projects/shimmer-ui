@@ -37,3 +37,7 @@ export const getLogin = (data?: object) => {
 export const refreshTokenApi = (data?: object) => {
   return http.request<RefreshTokenResult>("post", "/refreshToken", { data });
 };
+
+export const userList = () => {
+  return http.get("/shimmer/server/info");
+};
