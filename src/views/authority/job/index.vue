@@ -34,9 +34,12 @@ const confirmAdd = () => {
   });
 };
 // 详情操作
+const detailDialog = ref();
+const jobDetails = ref();
 const handleDetail = (id: number) => {
   jobDetail(id).then((res: ApiResult<Job>) => {
-    console.log(res.data);
+    jobDetails.value = res.data;
+    detailDialog.value = true;
   });
 };
 const handleEdit = (id: number) => {
@@ -56,6 +59,24 @@ const handleDelete = (id: number) => {
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
           <el-button type="primary" @click="confirmAdd"> 确认 </el-button>
+        </div>
+      </template>
+    </el-dialog>
+    <el-dialog v-model="detailDialog" title="职位详情" width="700" draggable>
+      <el-form :model="jobDetails">
+        <el-form-item label="职位名称" label-width="80">
+          <el-input disabled v-model="jobDetails.positionName" />
+        </el-form-item>
+        <el-form-item label="职位编码" label-width="80">
+          <el-input disabled v-model="jobDetails.positionCode" />
+        </el-form-item>
+        <el-form-item label="描述说明" label-width="80">
+          <el-input disabled v-model="jobDetails.remark" type="textarea" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="detailDialog = false">取消</el-button>
         </div>
       </template>
     </el-dialog>

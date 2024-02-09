@@ -1,16 +1,15 @@
 import { http } from "@/utils/http";
-import { ApiResult, Pager } from "@/api/base";
+import { Pager } from "@/api/base";
 
 export type Job = {
   positionName: string;
   positionCode: string;
   remark?: string;
 };
-export const jobList = (data?: ApiResult<Pager<Job>>) => {
-  if (data.cost > 20) {
-    console.log(data);
-  }
-  return http.get("/shimmer/position/fetch");
+export const jobList = (data?: Pager<Job>) => {
+  return http.get("/shimmer/position/fetch", {
+    params: data
+  });
 };
 
 export const jobInsert = (data: Job) => {
