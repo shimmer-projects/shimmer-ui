@@ -20,7 +20,6 @@ const jobs = ref();
 // 列表查询
 const list = () => {
   jobList().then((res: ApiResult<Pager<Job>>) => {
-    console.log(res);
     jobs.value = res.data.data;
   });
 };
