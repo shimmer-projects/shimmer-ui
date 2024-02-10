@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { ApiResult, Pager } from "@/api/base";
-import { Job, jobDelete, jobDetail, jobInsert, jobList } from "@/api/job";
-import { ref } from "vue";
+import {
+  Job,
+  jobDelete,
+  jobDetail,
+  jobInsert,
+  jobList,
+  jobUpdate
+} from "@/api/job";
+import { reactive, ref } from "vue";
 import JobForm from "@/views/authority/job/JobForm.vue";
 
 defineOptions({
@@ -10,6 +17,7 @@ defineOptions({
 
 const jobs = ref();
 
+// 列表查询
 const list = () => {
   jobList().then((res: ApiResult<Pager<Job>>) => {
     console.log(res);
@@ -19,17 +27,32 @@ const list = () => {
 
 list();
 
+// Job数据
+let formData = reactive({} as Job);
+
+// 新增
 const dialogVisible = ref();
 const addJob = () => {
   dialogVisible.value = true;
 };
-
-const jobForm = ref({} as Job);
-
 const confirmAdd = () => {
-  dialogVisible.value = false;
-  console.log(jobForm.value);
-  jobInsert(jobForm.value).then(() => {
+  jobInsert(formData).then(() => {
+    dialogVisible.value = false;
+    list();
+  });
+};
+
+// 修改
+const editVisible = ref();
+const handleEdit = (id: number) => {
+  jobDetail(id).then((res: ApiResult<Job>) => {
+    formData = reactive(res.data);
+    editVisible.value = true;
+  });
+};
+const confirmEdit = () => {
+  jobUpdate(formData).then(() => {
+    editVisible.value = false;
     list();
   });
 };
@@ -42,10 +65,8 @@ const handleDetail = (id: number) => {
     detailDialog.value = true;
   });
 };
-const handleEdit = (id: number) => {
-  console.log(id);
-};
 
+// 删除
 const handleDelete = (id: number) => {
   jobDelete(id).then(() => list());
 };
@@ -54,11 +75,20 @@ const handleDelete = (id: number) => {
 <template>
   <div>
     <el-dialog v-model="dialogVisible" title="新增职位" width="700" draggable>
-      <JobForm ref="jobForm" />
+      <JobForm v-model="formData" />
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="confirmAdd"> 确认 </el-button>
+          <el-button type="primary" @click="confirmAdd"> 确认</el-button>
+        </div>
+      </template>
+    </el-dialog>
+    <el-dialog v-model="editVisible" title="修改职位" width="700" draggable>
+      <JobForm v-model="formData" />
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="editVisible = false">取消</el-button>
+          <el-button type="primary" @click="confirmEdit"> 确认</el-button>
         </div>
       </template>
     </el-dialog>
@@ -109,22 +139,23 @@ const handleDelete = (id: number) => {
               type="primary"
               size="small"
               @click="handleDetail(scope.row.id)"
-              >详情</el-button
-            >
+              >详情
+            </el-button>
             <el-button
               link
               type="primary"
               size="small"
               @click="handleEdit(scope.row.id)"
-              >编辑</el-button
+              >编辑
+            </el-button>
+            <el-popconfirm
+              title="确定要删除吗?"
+              @confirm="handleDelete(scope.row.id)"
             >
-            <el-button
-              link
-              type="primary"
-              size="small"
-              @click="handleDelete(scope.row.id)"
-              >删除</el-button
-            >
+              <template #reference>
+                <el-button link type="primary" size="small">删除 </el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>

@@ -1,30 +1,25 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { Job } from "@/api/job";
 
 defineOptions({
   name: "JobForm"
 });
 
 const formLabelWidth = "80px";
-const jobForm = reactive({
-  positionName: "",
-  positionCode: "",
-  remark: ""
-});
 
-defineExpose(jobForm);
+const model = defineModel<Job>();
 </script>
 
 <template>
-  <el-form :model="jobForm">
+  <el-form :model="model">
     <el-form-item label="职位名称" :label-width="formLabelWidth">
-      <el-input v-model="jobForm.positionName" />
+      <el-input v-model="model.positionName" />
     </el-form-item>
     <el-form-item label="职位编码" :label-width="formLabelWidth">
-      <el-input v-model="jobForm.positionCode" />
+      <el-input v-model="model.positionCode" />
     </el-form-item>
     <el-form-item label="描述说明" :label-width="formLabelWidth">
-      <el-input v-model="jobForm.remark" type="textarea" />
+      <el-input v-model="model.remark" type="textarea" />
     </el-form-item>
   </el-form>
 </template>
