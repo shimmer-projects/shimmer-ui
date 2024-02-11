@@ -1,12 +1,11 @@
 import { http } from "@/utils/http";
-import { Pager } from "@/api/base";
 
 export type Job = {
   positionName: string;
   positionCode: string;
   remark?: string;
 };
-export const jobList = (data?: Pager<Job>) => {
+export const jobList = (data?: Job) => {
   return http.get("/shimmer/position/fetch", {
     params: data
   });

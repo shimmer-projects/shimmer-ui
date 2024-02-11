@@ -18,8 +18,8 @@ defineOptions({
 const jobs = ref();
 
 // 列表查询
-const list = () => {
-  jobList().then((res: ApiResult<Pager<Job>>) => {
+const list = (data?: Job) => {
+  jobList(data).then((res: ApiResult<Pager<Job>>) => {
     jobs.value = res.data.data;
   });
 };
@@ -69,6 +69,16 @@ const handleDetail = (id: number) => {
 const handleDelete = (id: number) => {
   jobDelete(id).then(() => list());
 };
+
+// search
+const searchForm = reactive({
+  positionName: "",
+  positionCode: "",
+  remark: ""
+});
+const onSubmit = () => {
+  list(searchForm);
+};
 </script>
 
 <template>
@@ -112,12 +122,38 @@ const handleDelete = (id: number) => {
     <div
       style="
         height: 60px;
-        padding-top: 20px;
+        padding-top: 15px;
         padding-left: 2rem;
         background-color: #fff;
       "
     >
       <el-button type="primary" @click="addJob">新增</el-button>
+      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+        <el-form-item label="职位名称">
+          <el-input
+            v-model="searchForm.positionName"
+            placeholder="请输入职位名称"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="职位编码">
+          <el-input
+            v-model="searchForm.positionCode"
+            placeholder="请输入职位编码"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="职位描述">
+          <el-input
+            v-model="searchForm.remark"
+            placeholder="请输入职位描述"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
     </div>
     <div
       style="
@@ -163,7 +199,15 @@ const handleDelete = (id: number) => {
 </template>
 
 <style scoped lang="scss">
-h1 {
-  color: pink;
+.demo-form-inline {
+  float: right;
+
+  .el-input {
+    --el-input-width: 220px;
+  }
+
+  .el-select {
+    --el-select-width: 220px;
+  }
 }
 </style>
