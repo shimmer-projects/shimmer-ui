@@ -1,28 +1,28 @@
 // import "@/utils/sso";
 import { getConfig } from "@/config";
 import NProgress from "@/utils/progress";
-import { sessionKey, type DataInfo } from "@/utils/auth";
+import { type DataInfo, sessionKey } from "@/utils/auth";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import {
-  Router,
   createRouter,
-  RouteRecordRaw,
-  RouteComponent
+  RouteComponent,
+  Router,
+  RouteRecordRaw
 } from "vue-router";
 import {
   ascending,
-  getTopMenu,
-  initRouter,
-  isOneOfArray,
-  getHistoryMode,
   findRouteByPath,
-  handleAliveRoute,
+  formatFlatteningRoutes,
   formatTwoStageRoutes,
-  formatFlatteningRoutes
+  getHistoryMode,
+  getTopMenu,
+  handleAliveRoute,
+  initRouter,
+  isOneOfArray
 } from "./utils";
 import { buildHierarchyTree } from "@/utils/tree";
-import { isUrl, openLink, storageSession, isAllEmpty } from "@pureadmin/utils";
+import { isAllEmpty, isUrl, openLink, storageSession } from "@pureadmin/utils";
 
 import remainingRouter from "./modules/remaining";
 
@@ -62,7 +62,14 @@ export const remainingPaths = Object.keys(remainingRouter).map(v => {
 /** 创建路由实例 */
 export const router: Router = createRouter({
   history: getHistoryMode(import.meta.env.VITE_ROUTER_HISTORY),
-  routes: constantRoutes.concat(...(remainingRouter as any)),
+  routes: constantRoutes.concat(...(remainingRouter as any)).concat({
+    path: "/:pathMatch(.*)*", // 解决路由报[Vue Router warn]: No match found for location with path
+    meta: {
+      title: "找不到此页面"
+    },
+    // redirect: '/403', // 错误方式，刷新立马会导致进入守卫的页面
+    component: () => import("@/views/error/404.vue") // 切记不要使用 redirect: '/403',
+  }),
   strict: true,
   scrollBehavior(to, from, savedPosition) {
     return new Promise(resolve => {
