@@ -8,14 +8,15 @@ defineOptions({
 const users = ref();
 const promise = userList();
 promise.then(res => {
-  console.log(res);
   users.value = res;
 });
 </script>
 
 <template>
-  <h1>用户管理</h1>
-  {{ users }}
+  <div>
+    <h1>用户管理</h1>
+    {{ users }}
+  </div>
 </template>
 
 <style scoped lang="scss">
