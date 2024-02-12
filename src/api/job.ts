@@ -5,7 +5,7 @@ export type Job = {
   positionCode: string;
   remark?: string;
 };
-export const jobList = (data?: Job) => {
+export const jobList = (data?: any) => {
   return http.get("/shimmer/position/fetch", {
     params: data
   });

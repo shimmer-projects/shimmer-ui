@@ -17,14 +17,41 @@ defineOptions({
 
 const jobs = ref();
 
+const defaultPageSize = ref(10);
 // 列表查询
+const page = ref({ pageNo: 1, pageSize: defaultPageSize.value } as Pager<Job>);
+
+const changeCurrentPage = (value: number) => {
+  // 基于查询条件的分页查询
+  page.value.pageNo = value;
+  searchAssign();
+};
+const changePrevPage = (value: number) => {
+  page.value.pageNo = value - 1;
+  searchAssign();
+};
+const changeNextPage = (value: number) => {
+  page.value.pageNo = value + 1;
+  searchAssign();
+};
+const changePageSize = (size: number) => {
+  page.value.pageSize = size;
+  searchAssign();
+};
+
+const searchAssign = () => {
+  const param = Object.assign(page.value, searchForm);
+  list(param);
+};
 const list = (data?: Job) => {
   jobList(data).then((res: ApiResult<Pager<Job>>) => {
+    page.value = JSON.parse(JSON.stringify(res.data));
+    delete page.value.data;
     jobs.value = res.data.data;
   });
 };
 
-list();
+list({ pageNo: 1, pageSize: defaultPageSize.value } as any);
 
 // Job数据
 let formData = reactive({} as Job);
@@ -163,7 +190,13 @@ const onSubmit = () => {
         background-color: #fff;
       "
     >
-      <el-table :data="jobs" border style="width: 100%">
+      <el-table
+        :data="jobs"
+        highlight-current-row
+        border
+        :header-cell-style="{ background: '#f5f7fa', color: '#606266' }"
+        style="width: 100%"
+      >
         <el-table-column prop="positionName" label="职位名称" width="180" />
         <el-table-column prop="positionCode" label="职位编码" width="180" />
         <el-table-column prop="remark" label="描述说明" />
@@ -194,6 +227,25 @@ const onSubmit = () => {
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        background
+        small
+        layout="total, sizes, prev, pager, next, jumper"
+        v-model:current-page="page.pageNo"
+        v-model:page-size="page.pageSize"
+        :total="page.recordCount"
+        @current-change="changeCurrentPage"
+        @prev-click="changePrevPage"
+        @next-click="changeNextPage"
+        @size-change="changePageSize"
+        :default-page-size="defaultPageSize"
+        style="
+          display: flex;
+          justify-content: flex-end;
+          width: 100%;
+          margin: 16px 0;
+        "
+      />
     </div>
   </div>
 </template>
@@ -209,5 +261,12 @@ const onSubmit = () => {
   .el-select {
     --el-select-width: 220px;
   }
+}
+
+.el-table__inner-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 </style>
