@@ -3,10 +3,11 @@ export type ApiResult<T> = {
   desc: string;
   time: string;
   cost: number;
-  data: T;
+  page?: Pager;
+  data?: T;
 };
 
-export type Pager<T> = {
+export type Pager = {
   first: boolean;
   last: boolean;
   next: boolean;
@@ -15,5 +16,4 @@ export type Pager<T> = {
   pageNo: number;
   pageSize: number;
   recordCount: number;
-  data: Array<T>;
 };

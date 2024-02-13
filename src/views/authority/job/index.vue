@@ -44,10 +44,9 @@ const searchAssign = () => {
   list(param);
 };
 const list = (data?: Job) => {
-  jobList(data).then((res: ApiResult<Pager<Job>>) => {
-    page.value = JSON.parse(JSON.stringify(res.data));
-    delete page.value.data;
-    jobs.value = res.data.data;
+  jobList(data).then((res: ApiResult<Array<Job>>) => {
+    page.value = res.page;
+    jobs.value = res.data;
   });
 };
 
